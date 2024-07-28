@@ -37,17 +37,21 @@
         const bird = {
             x: 50,
             y: canvas.height / 2,
-            width: 34,  // Adjust based on the actual size of the bird image
-            height: 24, // Adjust based on the actual size of the bird image
-            gravity: 0.15,
-            lift: -4,
+            width: 34,
+            height: 24,
+            gravity: 0.1,  // Reduced gravity
+            lift: -3,  // Sufficient lift
             velocity: 0
         };
 
         const pipes = [];
-        const pipeWidth = 50; // Adjust width based on the pipe image
-        const pipeGap = 100;
-        const pipeSpeed = 2;
+        const initialPipeWidth = 50; // Adjust width based on the pipe image
+        const initialPipeGap = 200;  // Increased pipe gap
+        const initialPipeSpeed = 1.5;  // Reduced pipe speed
+        let pipeWidth = initialPipeWidth;
+        let pipeGap = initialPipeGap;
+        let pipeSpeed = initialPipeSpeed;
+
         const platform = {
             x: 0,
             y: canvas.height - 20,
@@ -124,6 +128,12 @@
                 if (pipe.x + pipeWidth < 0) {
                     pipes.splice(index, 1);
                     score++;
+
+                    // Increase difficulty after reaching a score of 50
+                    if (score > 50) {
+                        pipeGap = Math.max(150, initialPipeGap - (score - 50));  // Decrease pipe gap gradually
+                        pipeSpeed = Math.min(3, initialPipeSpeed + (score - 50) * 0.02);  // Increase pipe speed gradually
+                    }
                 }
 
                 if (
@@ -169,6 +179,8 @@
             frameCount = 0;
             score = 0;
             gameOver = false;
+            pipeGap = initialPipeGap;
+            pipeSpeed = initialPipeSpeed;
         }
 
         function gameLoop() {
